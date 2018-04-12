@@ -36,13 +36,8 @@
             <button class="btn_add btn btn-lg btn-primary btn-block" type="submit">添加爬虫任务</button>
             <button class="btn_login btn btn-lg btn-primary btn-block" type="submit">登陆目标网址</button>
         </div>
-        <table class="table">
-            <tr>
-                <td>序号</td>
-                <td>网址</td>
-                <td>类型</td>
-            </tr>
-        </table>
+        <div class="row tables">
+        </div>
     </div>
 
     <!-- 需要弹出的添加任务链接 -->
@@ -79,14 +74,29 @@
                 btn: ['开始', '退出'],
                 content: $('#start_spider'),
                 yes: function(index) {
+                    $('#urls').empty();
                     now_urls = $('#urls').val();
-                    url_arr.push(now_urls);
-                    trs = "<tr><td>" + url_arr.length + "</td>" + "<td>" + now_urls + "</td>" + '<td>' + vals + '</td>' + "</td></tr>"
-                    $('.table').children().first().append(trs)
-
-                    // $.post("./",{urls:now_urls}, function(res){
-
-                    // })
+                    $.post("/start_spider/",{urls:now_urls}, function(res){
+                        if(res.data == false){
+                            layer.msg("爬虫队列没有该任务！");
+                        } else {
+                            url_arr.push(now_urls);
+                            var trs = "<table class='table table-condensed table-hover'>"
+                            trs0 = "<tr><td>任务" + url_arr.length + "</td><td>" + now_urls + "</td><td>" + vals + '</td><td></td></tr>'
+                            var trs1 = ""
+                            var trs2 = "" 
+                            var trs3 = ""
+                            for(var i = 0; i< res.data.length; i++){
+                                datas = res.data[i]
+                                trs1 = "<tr style='background-color:#5B6978;color:white'><td style='font-weight:bold;font-size:16px;'>" + datas['percent'].toFixed(2) + "%</td><td>" + datas['sport'] + "</td><td></td><td></td></tr>"
+                                trs2 = "<tr><td><p>" + datas['bet1']['bookmaker'] + "</p><p>" + datas['bet1']['current_score'] + "</p></td><td><p>" + datas['bet1']['home'] + '-' + datas['bet1']['away'] + "</p><p>" + datas['bet1']['league'] + "</p></td><td>" + datas['bet1']['bet_variation_name'] + "(" + datas['bet1']['bet_value'] + ")" + "</td><td>" + datas['bet1']['koef'] + "</td></tr>"
+                                trs3 = "<tr><td><p>" + datas['bet2']['bookmaker'] + "</p><p>" + datas['bet2']['current_score'] + "</p></td><td><p>" + datas['bet2']['home'] + '-' + datas['bet2']['away'] + "</p><p>" + datas['bet2']['league'] + "</p></td><td>" + datas['bet2']['bet_variation_name'] + "(" + datas['bet1']['bet_value'] + ")" + "</td><td>" + datas['bet2']['koef'] + "</td></tr>"
+                                trs0 += trs1 + trs2 + trs3
+                            }
+                            trs += trs0 + "</tabe>"
+                            $('.tables').append(trs);
+                        }
+                    })
                     layer.close(index);
                 }
             });

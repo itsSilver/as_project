@@ -15,13 +15,13 @@ def index():
 def start_spider():
     if request.method == 'POST':
         urls = str(request.form['urls'])
-        mid_str =  urls.split('.') 
-        if mid_str[1] == 'betburger':
+        url_mid_name =  urls.split('.')[1]
+        if url_mid_name == 'betburger':
             # www.betburger.com
             urls = 'https://api-lv.betburger.com/api/v1/arbs/pro_search?access_token='
             dir_url = 'https://api-lv.betburger.com/api/v1/directories?access_token='
             bet_val_url = 'https://api-lv.betburger.com/api/v1/bet_combinations/'
-            mb = spiders.back_mod_betburger.ModBetburger(urls, dir_url, bet_val_url)
+            mb = spiders.back_mod_betburger.ModBetburger(urls, dir_url, bet_val_url, url_mid_name)
             data = mb.get_data_info()
             return jsonify({'data': data})
         else:

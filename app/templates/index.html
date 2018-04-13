@@ -76,6 +76,11 @@
                 yes: function(index) {
                     $('#urls').empty();
                     now_urls = $('#urls').val();
+                    var patt = new RegExp("^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$")
+                    if(!(patt.test(now_urls))) {
+                        layer.msg("您输入的网址不合理！");
+                        return false
+                    }
                     $.post("/start_spider/",{urls:now_urls}, function(res){
                         if(res.data == false){
                             layer.msg("爬虫队列没有该任务！");

@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>首页</title>
+    <link rel="stylesheet" href="/static/layer/theme/default/layer.css">
+    <link rel="stylesheet" href="/static/css/bootstrap.min.css">
+    <script src="/static/js/jquery-3.3.1.js"></script>
+    <script src="/static/layer/layer.js"></script>
+    <script src="/static/js/bootstrap.min.js"></script>
+    <style>
+        body {
+            padding-top: 40px;
+            padding-bottom: 40px;
+            background-color: #eee;
+        }
+
+        .form-signin {
+            max-width: 330px;
+            padding: 15px;
+            margin: 0 auto;
+        }
+
+        .form-control {
+            margin-top: 6px;
+            height: 50px;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="form-signin">
+            <button class="btn_add btn btn-lg btn-primary btn-block" type="submit">添加爬虫任务</button>
+            <button class="btn_login btn btn-lg btn-primary btn-block" type="submit">登陆目标网址</button>
+        </div>
+        <table class="table table-condensed table-hover">
+            <tr></tr>
+            <!-- <tr>
+                <td>序号</td>
+                <td>网址</td>
+                <td>类型</td>
+            </tr> -->
+        </table>
+    </div>
+
+    <!-- 需要弹出的添加任务链接 -->
+    <div class='start_spider' id="start_spider" style="display: none;">
+        <input id='urls' style="width:420px;margin-left:20px;margin-top:50px" name='spider_urls'  type="text" class="form-control urls" placeholder="请输入网址">
+        <select style="width:420px;margin-left:20px;margin-top:10px" name="category" id="category" class="form-control">
+            <!-- <option value="0">请选择...</option> -->
+            <option value="类型1">类型1</option>
+            <option value="类型2">类型2</option>
+            <option value="类型3">类型3</option>
+        </select>
+    </div>
+
+    <!-- 跳转登陆页面 -->
+    <div class='login_herf' id="login_herf" style="display: none;">
+        <input id='herfs' style="width:420px;margin-left:20px;margin-top:50px" name='herf'  type="text" class="form-control" placeholder="请输入网址">
+    </div>
+</body>
+<script>
+    $(function() {
+        var vals = "类型1"
+        var url_arr = new Array() 
+        $('#category').change(function() {
+           vals = $(this).val();
+        });
+
+        // 添加爬虫任务
+        $('.btn_add').click(function() {
+            layer.open({
+                type: 1,
+                title: '添加爬虫任务',
+                shadeClose:true, 
+                area: ['460px', '300px'],
+                btn: ['开始', '退出'],
+                content: $('#start_spider'),
+                yes: function(index) {
+                    $('#urls').empty();
+                    now_urls = $('#urls').val();
+                    $.post("/start_spider/",{urls:now_urls}, function(res){
+                        if(res.data == false){
+                            layer.msg("爬虫队列没有该任务！");
+                        } else {
+                            url_arr.push(now_urls);
+                            var trs0 = ""
+                            var trs1 = ""
+                            var trs2 = "" 
+                            var trs3 = ""
+                            for(var i = 0; i< res.data.length; i++){
+                                datas = res.data[i]
+                                trs1 = "<tr style='background-color:#5B6978;color:white'><td style='font-weight:bold;font-size:16px;'>" + datas['percent'].toFixed(2) + "%</td><td>" + datas['sport'] + "</td><td></td><td></td></tr>"
+                                trs2 = "<tr><td><p>" + datas['bet1']['bookmaker'] + "</p><p>" + datas['bet1']['current_score'] + "</p></td><td><p>" + datas['bet1']['home'] + '-' + datas['bet1']['away'] + "</p><p>" + datas['bet1']['league'] + "</p></td><td>" + datas['bet1']['bet_variation_name'] + "(" + datas['bet1']['bet_value'] + ")" + "</td><td>" + datas['bet1']['koef'] + "</td></tr>"
+                                trs3 = "<tr><td><p>" + datas['bet2']['bookmaker'] + "</p><p>" + datas['bet2']['current_score'] + "</p></td><td><p>" + datas['bet2']['home'] + '-' + datas['bet2']['away'] + "</p><p>" + datas['bet2']['league'] + "</p></td><td>" + datas['bet2']['bet_variation_name'] + "(" + datas['bet1']['bet_value'] + ")" + "</td><td>" + datas['bet2']['koef'] + "</td></tr>"
+                                trs0 += trs1 + trs2 + trs3
+                            }
+                            // trs = "<tr><table class='table'><tr><td>任务" + url_arr.length + "</td>" + "<td>" + now_urls + "</td>" + '<td>' + vals + '</td>' +
+                            // "</td></tr>" + trs0 + "</table></tr>"
+                            trs = "<tr><td>任务" + url_arr.length + "</td>" + "<td>" + now_urls + "</td>" + '<td>' + vals + '</td>' +
+                            "</td><td>" + trs0 + "</td><td></td></tr>"
+                            $('.table').children().first().append(trs)
+                        }
+                    })
+                    layer.close(index);
+                }
+            });
+        });
+
+        // 登陆目标网址
+        $('.btn_login').click(function() {
+            layer.open({
+                type: 1,
+                title: '登陆目标网址',
+                shadeClose: true,
+                area: ['460px', '300px'], 
+                btn: ['跳转', '取消'],
+                content: $('#login_herf'),
+                yes: function() {
+                    hrefs = $('#herfs').val();
+                    location.href = "https://" + hrefs;
+                }
+            });
+        });
+    });
+</script>
+</html>

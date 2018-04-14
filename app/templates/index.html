@@ -93,19 +93,36 @@
                             var trs3 = ""
                             for(var i = 0; i< res.data.length; i++){
                                 datas = res.data[i]
-                                trs1 = "<tr style='background-color:#5B6978;color:white'><td style='font-weight:bold;font-size:16px;'>" + datas['percent'].toFixed(2) + "%</td><td>" + datas['sport'] + "</td><td></td><td></td></tr>"
-                                trs2 = "<tr><td><p>" + datas['bet1']['bookmaker'] + "</p><p>" + datas['bet1']['current_score'] + "</p></td><td><p>" + datas['bet1']['home'] + '-' + datas['bet1']['away'] + "</p><p>" + datas['bet1']['league'] + "</p></td><td>" + datas['bet1']['bet_variation_name'] + "(" + datas['bet1']['bet_value'] + ")" + "</td><td>" + datas['bet1']['koef'] + "</td></tr>"
-                                trs3 = "<tr><td><p>" + datas['bet2']['bookmaker'] + "</p><p>" + datas['bet2']['current_score'] + "</p></td><td><p>" + datas['bet2']['home'] + '-' + datas['bet2']['away'] + "</p><p>" + datas['bet2']['league'] + "</p></td><td>" + datas['bet2']['bet_variation_name'] + "(" + datas['bet1']['bet_value'] + ")" + "</td><td>" + datas['bet2']['koef'] + "</td></tr>"
+                                trs1 = "<tr style='background-color:#5B6978;color:white'><td style='font-weight:bold;font-size:16px;'>" + datas['percent'].toFixed(2) + "%</td><td>" + datas['sport'] + "</td><td></td><td><button type='button' class='btn btn-default open_web'>打开</button></td></tr>"
+                                trs2 = "<tr><td><p url=" + datas['bet1']['bookmaker_url'] + ">" + datas['bet1']['bookmaker'] + "</p><p>" + datas['bet1']['current_score'] + "</p></td><td><p>" + datas['bet1']['home'] + '-' + datas['bet1']['away'] + "</p><p>" + datas['bet1']['league'] + "</p></td><td>" + datas['bet1']['bet_variation_name'] + "(" + datas['bet1']['bet_value'] + ")" + "</td><td>" + datas['bet1']['koef'] + "</td></tr>"
+                                trs3 = "<tr><td><p url=" + datas['bet2']['bookmaker_url'] + ">" + datas['bet2']['bookmaker'] + "</p><p>" + datas['bet2']['current_score'] + "</p></td><td><p>" + datas['bet2']['home'] + '-' + datas['bet2']['away'] + "</p><p>" + datas['bet2']['league'] + "</p></td><td>" + datas['bet2']['bet_variation_name'] + "(" + datas['bet1']['bet_value'] + ")" + "</td><td>" + datas['bet2']['koef'] + "</td></tr>"
                                 trs0 += trs1 + trs2 + trs3
                             }
                             trs += trs0 + "</tabe>"
                             $('.tables').append(trs);
+                            $('.open_web').on("click",function() {
+                                url1 = $(this).parents("tr").next().find('p').first().attr('url');
+                                url2 = $(this).parents("tr").next().next().find('p').first().attr('url');
+                                // console.log(url1);
+                                var wi = window.open('about:blank', '_blank');
+                                setTimeout(function() {
+                                    console.log("==============");
+                                    console.log(url2);
+                                    wi.location.href = url2;
+                                }, 500);
+                                var wi1 = window.open('about:blank', '_blank');
+                                setTimeout(function() {
+                                    location.href = url1
+                                });
+                                // window.open(url1, "name1");
+                            });
                         }
                     })
                     layer.close(index);
                 }
             });
         });
+
 
         // 登陆目标网址
         $('.btn_login').click(function() {
@@ -125,7 +142,7 @@
         });
 
         // 删除服务器tmp中的临时文件
-        times = 1000 * 60 * 30  
+        times = 1000 * 60 * 30 * 6 
         // times = 2000
         var t = window.setInterval(del, times)
         function del() {

@@ -66,6 +66,7 @@
 
         // 添加爬虫任务
         $('.btn_add').click(function() {
+            // $('.urls').val("");
             layer.open({
                 type: 1,
                 title: '添加爬虫任务',
@@ -74,7 +75,6 @@
                 btn: ['开始', '退出'],
                 content: $('#start_spider'),
                 yes: function(index) {
-                    $('#urls').empty();
                     now_urls = $('#urls').val();
                     var patt = new RegExp("^(https?:\/\/)?([\da-z\.-]+)\..*\/?$")
                     if(!(patt.test(now_urls))) {

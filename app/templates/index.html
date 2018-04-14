@@ -76,7 +76,7 @@
                 yes: function(index) {
                     $('#urls').empty();
                     now_urls = $('#urls').val();
-                    var patt = new RegExp("^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$")
+                    var patt = new RegExp("^(https?:\/\/)?([\da-z\.-]+)\..*\/?$")
                     if(!(patt.test(now_urls))) {
                         layer.msg("您输入的网址不合理！");
                         return false

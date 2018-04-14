@@ -1,6 +1,8 @@
 # coding=utf-8
 
 
+import os
+import shutil
 from flask import render_template, request, jsonify
 from . import main
 from .. import spiders
@@ -26,3 +28,15 @@ def start_spider():
             return jsonify({'data': data})
         else:
             return jsonify({'data': False})
+
+
+@main.route('/del_tmp/', methods=['GET'])
+def del_tmp():
+    if request.method == 'GET':
+        now_dir = os.getcwd() + '/tmp/'
+        dir_list = os.listdir(now_dir)
+        if len(dir_list) > 0:
+            shutil.rmtree(now_dir)
+            os.mkdir(now_dir)
+        return jsonify({'is_del':True}) 
+

@@ -101,9 +101,8 @@ class ModBetburger():
         bet_variations_data = directories_data['bet_variations']
         for res in result:
             bet1_break = False 
-            bet2_break = False 
+            bet2_break = False
             for bet in bet_combinations_data:
-                # self.get_bet_value(res[bet1]['bc_id'], bet_combinations_data)
                 if bet1_break == False:
                     if bet['id'] == res['bet1']['bc_id']:
                         res['bet1']['bet_value'] = bet['value']
@@ -113,27 +112,26 @@ class ModBetburger():
                     if bet['id'] == res['bet2']['bc_id']:
                         res['bet2']['bet_value'] = bet['value']
                         res['bet2']['bv_id'] = bet['bv_id']
-                        bet2_break = True
+                        bet1_break = True
                 if bet1_break == True and bet2_break == True:
                     break
 
+            b1_break = False
+            b2_break = False
             for d in bet_variations_data:
-                if res['bet1']['bv_id'] == d['id']:
-                    res['bet1']['bet_variation_name'] = d['name']
-                if res['bet2']['bv_id'] == d['id']:
-                    res['bet2']['bet_variation_name'] = d['name']
+                if b1_break == False:
+                    if res['bet1']['bv_id'] == d['id']:
+                        res['bet1']['bet_variation_name'] = d['name']
+                        b1_break = True
+                if b2_break == False:
+                    if res['bet2']['bv_id'] == d['id']:
+                        res['bet2']['bet_variation_name'] = d['name']
+                        b2_break = True
+                if b1_break == True and b2_break == True:
+                    break
     
         # print(result)
         return result
-
-
-    # 获取目录比值的id
-    def get_bet_value(self, bet_id, bet_combinations_data):
-
-        for bet in bet_combinations_data:
-            if bet['id'] == bet_id:
-                print("=======================")
-                print("val:", bet['value'])
 
 
     # 获取目录对应的数据

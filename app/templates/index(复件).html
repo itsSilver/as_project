@@ -36,8 +36,14 @@
             <button class="btn_add btn btn-lg btn-primary btn-block" type="submit">添加爬虫任务</button>
             <button class="btn_login btn btn-lg btn-primary btn-block" type="submit">登陆目标网址</button>
         </div>
-        <div class="row tables">
-        </div>
+        <table class="table table-condensed table-hover">
+            <tr></tr>
+            <!-- <tr>
+                <td>序号</td>
+                <td>网址</td>
+                <td>类型</td>
+            </tr> -->
+        </table>
     </div>
 
     <!-- 需要弹出的添加任务链接 -->
@@ -76,18 +82,12 @@
                 yes: function(index) {
                     $('#urls').empty();
                     now_urls = $('#urls').val();
-                    var patt = new RegExp("^(https?:\/\/)?([\da-z\.-]+)\..*\/?$")
-                    if(!(patt.test(now_urls))) {
-                        layer.msg("您输入的网址不合理！");
-                        return false
-                    }
                     $.post("/start_spider/",{urls:now_urls}, function(res){
                         if(res.data == false){
                             layer.msg("爬虫队列没有该任务！");
                         } else {
                             url_arr.push(now_urls);
-                            var trs = "<table class='table table-condensed table-hover'>"
-                            trs0 = "<tr><td>任务" + url_arr.length + "</td><td>" + now_urls + "</td><td>" + vals + '</td><td></td></tr>'
+                            var trs0 = ""
                             var trs1 = ""
                             var trs2 = "" 
                             var trs3 = ""
@@ -98,8 +98,11 @@
                                 trs3 = "<tr><td><p>" + datas['bet2']['bookmaker'] + "</p><p>" + datas['bet2']['current_score'] + "</p></td><td><p>" + datas['bet2']['home'] + '-' + datas['bet2']['away'] + "</p><p>" + datas['bet2']['league'] + "</p></td><td>" + datas['bet2']['bet_variation_name'] + "(" + datas['bet1']['bet_value'] + ")" + "</td><td>" + datas['bet2']['koef'] + "</td></tr>"
                                 trs0 += trs1 + trs2 + trs3
                             }
-                            trs += trs0 + "</tabe>"
-                            $('.tables').append(trs);
+                            // trs = "<tr><table class='table'><tr><td>任务" + url_arr.length + "</td>" + "<td>" + now_urls + "</td>" + '<td>' + vals + '</td>' +
+                            // "</td></tr>" + trs0 + "</table></tr>"
+                            trs = "<tr><td>任务" + url_arr.length + "</td>" + "<td>" + now_urls + "</td>" + '<td>' + vals + '</td>' +
+                            "</td><td>" + trs0 + "</td><td></td></tr>"
+                            $('.table').children().first().append(trs)
                         }
                     })
                     layer.close(index);
@@ -122,15 +125,6 @@
                 }
             });
         });
-
-        // 删除服务器tmp中的临时文件
-        times = 1000 * 60 * 30  
-        // times = 2000
-        var t = window.setInterval(del, times)
-        function del() {
-            $.get('/del_tmp/', function(res){
-            });
-        }
     });
 </script>
 </html>

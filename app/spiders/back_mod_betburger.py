@@ -48,6 +48,8 @@ class ModBetburger():
             bm_id_2 = data['bets'][index2]['bookmaker_id']
             bet1['bookmaker'] = self.get_directory_data(bm_id_1, directories_data, dir_kw='bookmakers', get_kw='name')
             bet2['bookmaker'] = self.get_directory_data(bm_id_2, directories_data, dir_kw='bookmakers', get_kw='name')
+            bet1['bookmaker_url'] = self.get_directory_data(bm_id_1, directories_data, dir_kw='bookmakers', get_kw='url')
+            bet2['bookmaker_url'] = self.get_directory_data(bm_id_2, directories_data, dir_kw='bookmakers', get_kw='url')
 
             bc_id1 = data['bets'][index1]['bc_id']
             bc_id2 = data['bets'][index2]['bc_id']

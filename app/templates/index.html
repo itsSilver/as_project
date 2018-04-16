@@ -103,18 +103,16 @@
                             $('.open_web').on("click",function() {
                                 url1 = $(this).parents("tr").next().find('p').first().attr('url');
                                 url2 = $(this).parents("tr").next().next().find('p').first().attr('url');
-                                // console.log(url1);
-                                var wi = window.open('about:blank', '_blank');
+                                /* var wi = window.open('about:blank', '_blank');
                                 setTimeout(function() {
-                                    console.log("==============");
-                                    console.log(url2);
                                     wi.location.href = url2;
                                 }, 500);
                                 var wi1 = window.open('about:blank', '_blank');
                                 setTimeout(function() {
                                     location.href = url1
-                                });
-                                // window.open(url1, "name1");
+                                }); */
+                                window.open(url1, "name1");
+                                window.open(url2, "name2");
                             });
                         }
                     })

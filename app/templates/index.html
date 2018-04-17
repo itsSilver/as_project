@@ -42,7 +42,7 @@
 
     <!-- 需要弹出的添加任务链接 -->
     <div class='start_spider' id="start_spider" style="display: none;">
-        <input id='urls' style="width:420px;margin-left:20px;margin-top:50px" name='spider_urls'  type="text" class="form-control urls" placeholder="请输入网址">
+        <input id='urls' style="width:420px;margin-left:20px;margin-top:50px" name='spider_urls' value="https://www.betburger.com/" type="text" class="form-control urls" placeholder="请输入网址">
         <select style="width:420px;margin-left:20px;margin-top:10px" name="category" id="category" class="form-control">
             <!-- <option value="0">请选择...</option> -->
             <option value="类型1">类型1</option>
@@ -81,10 +81,12 @@
                         layer.msg("您输入的网址不合理！");
                         return false
                     }
+                    layer.load(2);
                     $.post("/start_spider/",{urls:now_urls}, function(res){
                         if(res.data == false){
                             layer.msg("爬虫队列没有该任务！");
                         } else {
+                            layer.closeAll('loading');
                             url_arr.push(now_urls);
                             var trs = "<table class='table table-condensed table-hover'>"
                             trs0 = "<tr style='background-color:rgb(235, 227, 116);'><td>任务" + url_arr.length + "</td><td>" + now_urls + "</td><td>" + vals + '</td><td></td></tr>'
@@ -94,8 +96,8 @@
                             for(var i = 0; i< res.data.length; i++){
                                 datas = res.data[i]
                                 trs1 = "<tr style='background-color:#5B6978;color:white'><td style='font-weight:bold;font-size:16px;'>" + datas['percent'].toFixed(2) + "%</td><td>" + datas['sport'] + "</td><td></td><td><button type='button' class='btn btn-default open_web'>打开</button></td></tr>"
-                                trs2 = "<tr><td><p url=" + datas['bet1']['bookmaker_url'] + ">" + datas['bet1']['bookmaker'] + "</p><p>" + datas['bet1']['current_score'] + "</p></td><td><p>" + datas['bet1']['home'] + '-' + datas['bet1']['away'] + "</p><p>" + datas['bet1']['league'] + "</p></td><td>" + datas['bet1']['bet_variation_name'] + "(" + datas['bet1']['bet_value'] + ")" + "</td><td>" + datas['bet1']['koef'] + "</td></tr>"
-                                trs3 = "<tr><td><p url=" + datas['bet2']['bookmaker_url'] + ">" + datas['bet2']['bookmaker'] + "</p><p>" + datas['bet2']['current_score'] + "</p></td><td><p>" + datas['bet2']['home'] + '-' + datas['bet2']['away'] + "</p><p>" + datas['bet2']['league'] + "</p></td><td>" + datas['bet2']['bet_variation_name'] + "(" + datas['bet1']['bet_value'] + ")" + "</td><td>" + datas['bet2']['koef'] + "</td></tr>"
+                                trs2 = "<tr><td><p url=" + datas['bet1']['bookmaker_url'] + ">" + datas['bet1']['bookmaker'] + "</p><p>" + datas['bet1']['current_score'] + "</p></td><td><p>" + datas['bet1']['home'] + ' --- ' + datas['bet1']['away'] + "</p><p>" + datas['bet1']['league'] + "</p></td><td>" + datas['bet1']['bet_variation_name'] + "(" + datas['bet1']['bet_value'] + ")" + "</td><td>" + datas['bet1']['koef'] + "</td></tr>"
+                                trs3 = "<tr><td><p url=" + datas['bet2']['bookmaker_url'] + ">" + datas['bet2']['bookmaker'] + "</p><p>" + datas['bet2']['current_score'] + "</p></td><td><p>" + datas['bet2']['home'] + ' --- ' + datas['bet2']['away'] + "</p><p>" + datas['bet2']['league'] + "</p></td><td>" + datas['bet2']['bet_variation_name'] + "(" + datas['bet1']['bet_value'] + ")" + "</td><td>" + datas['bet2']['koef'] + "</td></tr>"
                                 trs0 += trs1 + trs2 + trs3
                             }
                             trs += trs0 + "</tabe>"
@@ -103,18 +105,16 @@
                             $('.open_web').on("click",function() {
                                 url1 = $(this).parents("tr").next().find('p').first().attr('url');
                                 url2 = $(this).parents("tr").next().next().find('p').first().attr('url');
-                                // console.log(url1);
-                                var wi = window.open('about:blank', '_blank');
+                                /* var wi = window.open('about:blank', '_blank');
                                 setTimeout(function() {
-                                    console.log("==============");
-                                    console.log(url2);
                                     wi.location.href = url2;
                                 }, 500);
                                 var wi1 = window.open('about:blank', '_blank');
                                 setTimeout(function() {
                                     location.href = url1
-                                });
-                                // window.open(url1, "name1");
+                                }); */
+                                window.open(url1, "name1");
+                                window.open(url2, "name2");
                             });
                         }
                     })

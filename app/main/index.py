@@ -3,6 +3,8 @@
 
 import os
 import shutil
+import threading
+import Queue
 from flask import render_template, request, jsonify
 from . import main
 from .. import spiders
@@ -20,17 +22,28 @@ def start_spider():
             urls = str(request.form['urls'])
             url_mid_name =  urls.split('.')[1]
             if url_mid_name == 'betburger':
-                # www.betburger.com
-                urls = 'https://api-lv.betburger.com/api/v1/arbs/pro_search?access_token='
-                dir_url = 'https://api-lv.betburger.com/api/v1/directories?access_token='
-                bet_val_url = 'https://api-lv.betburger.com/api/v1/bet_combinations/'
-                mb = spiders.back_mod_betburger.ModBetburger(urls, dir_url, bet_val_url, url_mid_name)
-                data = mb.get_data_info()
-                return jsonify({'data': data})
+                q = Queue.Queue()
+                while True:
+                    t1 = threading.Thread(target=get_data, args=(url_mid_name, q,))
+                    t1.start()
+                    t1.join()
+                    data = q.get_nowait()
+                    if len(data) != 0:
+                        return jsonify({'data': data})
             else:
                 return jsonify({'data': False})
         except:
             return jsonify({'data': False})
+
+
+def get_data(url_mid_name, q):
+    urls = 'https://api-lv.betburger.com/api/v1/arbs/pro_search?access_token='
+    dir_url = 'https://api-lv.betburger.com/api/v1/directories?access_token='
+    bet_val_url = 'https://api-lv.betburger.com/api/v1/bet_combinations/'
+    mb = spiders.back_mod_betburger.ModBetburger(urls, dir_url, bet_val_url, url_mid_name)
+    data = mb.get_data_info()
+    q.put(data)
+
 
 @main.route('/del_tmp/', methods=['GET'])
 def del_tmp():
@@ -41,4 +54,3 @@ def del_tmp():
             shutil.rmtree(now_dir)
             os.mkdir(now_dir)
         return jsonify({'is_del':True}) 
-

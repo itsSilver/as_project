@@ -42,7 +42,7 @@
 
     <!-- 需要弹出的添加任务链接 -->
     <div class='start_spider' id="start_spider" style="display: none;">
-        <input id='urls' style="width:420px;margin-left:20px;margin-top:50px" name='spider_urls'  type="text" class="form-control urls" placeholder="请输入网址">
+        <input id='urls' style="width:420px;margin-left:20px;margin-top:50px" name='spider_urls' value="https://www.betburger.com/" type="text" class="form-control urls" placeholder="请输入网址">
         <select style="width:420px;margin-left:20px;margin-top:10px" name="category" id="category" class="form-control">
             <!-- <option value="0">请选择...</option> -->
             <option value="类型1">类型1</option>
@@ -81,10 +81,12 @@
                         layer.msg("您输入的网址不合理！");
                         return false
                     }
+                    layer.load(2);
                     $.post("/start_spider/",{urls:now_urls}, function(res){
                         if(res.data == false){
                             layer.msg("爬虫队列没有该任务！");
                         } else {
+                            layer.closeAll('loading');
                             url_arr.push(now_urls);
                             var trs = "<table class='table table-condensed table-hover'>"
                             trs0 = "<tr style='background-color:rgb(235, 227, 116);'><td>任务" + url_arr.length + "</td><td>" + now_urls + "</td><td>" + vals + '</td><td></td></tr>'

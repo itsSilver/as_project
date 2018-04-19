@@ -96,8 +96,8 @@
                             for(var i = 0; i< res.data.length; i++){
                                 datas = res.data[i]
                                 trs1 = "<tr style='background-color:#5B6978;color:white'><td style='font-weight:bold;font-size:16px;'>" + datas['percent'].toFixed(2) + "%</td><td>" + datas['sport'] + "</td><td></td><td><button type='button' class='btn btn-default open_web'>打开</button></td></tr>"
-                                trs2 = "<tr><td><p url=" + datas['bet1']['bookmaker_url'] + ">" + datas['bet1']['bookmaker'] + "</p><p>" + datas['bet1']['current_score'] + "</p></td><td><p>" + datas['bet1']['home'] + ' --- ' + datas['bet1']['away'] + "</p><p>" + datas['bet1']['league'] + "</p></td><td>" + datas['bet1']['bet_variation_name'] + "(" + datas['bet1']['bet_value'] + ")" + "</td><td>" + datas['bet1']['koef'] + "</td></tr>"
-                                trs3 = "<tr><td><p url=" + datas['bet2']['bookmaker_url'] + ">" + datas['bet2']['bookmaker'] + "</p><p>" + datas['bet2']['current_score'] + "</p></td><td><p>" + datas['bet2']['home'] + ' --- ' + datas['bet2']['away'] + "</p><p>" + datas['bet2']['league'] + "</p></td><td>" + datas['bet2']['bet_variation_name'] + "(" + datas['bet1']['bet_value'] + ")" + "</td><td>" + datas['bet2']['koef'] + "</td></tr>"
+                                trs2 = "<tr><td><p url=" + datas['bet1']['bookmaker_url'] + ">" + datas['bet1']['bookmaker'] + "</p><p>" + datas['bet1']['current_score'] + "</p></td><td><p>" + datas['bet1']['home'] + ' - ' + datas['bet1']['away'] + "</p><p>" + datas['bet1']['league'] + "</p></td><td>" + datas['bet1']['bet_variation_name'] + "(" + datas['bet1']['bet_value'] + ")" + "</td><td>" + datas['bet1']['koef'] + "</td></tr>"
+                                trs3 = "<tr><td><p url=" + datas['bet2']['bookmaker_url'] + ">" + datas['bet2']['bookmaker'] + "</p><p>" + datas['bet2']['current_score'] + "</p></td><td><p>" + datas['bet2']['home'] + ' - ' + datas['bet2']['away'] + "</p><p>" + datas['bet2']['league'] + "</p></td><td>" + datas['bet2']['bet_variation_name'] + "(" + datas['bet1']['bet_value'] + ")" + "</td><td>" + datas['bet2']['koef'] + "</td></tr>"
                                 trs0 += trs1 + trs2 + trs3
                             }
                             trs += trs0 + "</tabe>"
@@ -105,16 +105,16 @@
                             $('.open_web').on("click",function() {
                                 url1 = $(this).parents("tr").next().find('p').first().attr('url');
                                 url2 = $(this).parents("tr").next().next().find('p').first().attr('url');
-                                /* var wi = window.open('about:blank', '_blank');
-                                setTimeout(function() {
-                                    wi.location.href = url2;
-                                }, 500);
-                                var wi1 = window.open('about:blank', '_blank');
-                                setTimeout(function() {
-                                    location.href = url1
-                                }); */
-                                window.open(url1, "name1");
-                                window.open(url2, "name2");
+                                ranks1 = $(this).parents("tr").next().find('td').eq(1).find('p').first().text()
+                                ranks2 = $(this).parents("tr").next().next().find("td").eq(1).find('p').first().text()
+                                $.post('/current_bet_url/', {ranks1:ranks1, ranks2:ranks2, url1:url1, url2:url2}, function(res){
+                                    if(res.url1.length > 0) {
+                                       window.open(res.url1, "name1") 
+                                    }
+                                    if(res.url2.length > 0) {
+                                       window.open(res.url2, "name2") 
+                                    }
+                                });
                             });
                         }
                     })

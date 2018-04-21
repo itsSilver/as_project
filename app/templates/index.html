@@ -59,6 +59,7 @@
 <script>
     $(function() {
         var vals = "类型1"
+        var bet365_url = "https://www.bet365.com/en/"
         var url_arr = new Array() 
         $('#category').change(function() {
            vals = $(this).val();
@@ -103,16 +104,48 @@
                             trs += trs0 + "</tabe>"
                             $('.tables').append(trs);
                             $('.open_web').on("click",function() {
+                                layer.load(2);
+                                sports = $(this).parents("tr").find('td').eq(1).text()
                                 url1 = $(this).parents("tr").next().find('p').first().attr('url');
                                 url2 = $(this).parents("tr").next().next().find('p').first().attr('url');
                                 ranks1 = $(this).parents("tr").next().find('td').eq(1).find('p').first().text()
                                 ranks2 = $(this).parents("tr").next().next().find("td").eq(1).find('p').first().text()
-                                $.post('/current_bet_url/', {ranks1:ranks1, ranks2:ranks2, url1:url1, url2:url2}, function(res){
+                                $.post('/current_bet_url/', {ranks1:ranks1, ranks2:ranks2, url1:url1, url2:url2, sports:sports}, function(res){
                                     if(res.url1.length > 0) {
-                                       window.open(res.url1, "name1") 
+                                        layer.closeAll('loading');
+                                        if(res.url1 == 'https://www.bet365.com/#/IP/') {
+                                            // var w1 = window.open(bet365_url, "name1") 
+                                            var w1 = window.open('about:blank', "_blank") 
+                                        } else {
+                                            var w1 = window.open(res.url1, "name1") 
+                                        }
+                                        if(res.cookies1.length > 0) {
+                                            document.cookie = res.cookies1;
+                                            setTimeout(function() {
+                                                w1.location.href = res.url1
+                                            }, 500);
+                                        }
+                                    } else {
+                                        layer.closeAll('loading');
+                                        window.open(url1, "name1") 
                                     }
                                     if(res.url2.length > 0) {
-                                       window.open(res.url2, "name2") 
+                                        layer.closeAll('loading');
+                                        if(res.url2 == 'https://www.bet365.com/#/IP/') {
+                                            // var w2 = window.open(bet365_url, "name2") 
+                                            var w2 = window.open('about:blank', "_blank") 
+                                        } else {
+                                            var w2 = window.open(res.url2, "name2") 
+                                        }
+                                        if(res.cookies2.length > 0) {
+                                            document.cookie = res.cookies2;
+                                            setTimeout(function() {
+                                                w2.location.href = res.url2;
+                                            }, 500);
+                                        }
+                                    } else {
+                                        layer.closeAll('loading');
+                                        window.open(url2, "name2") 
                                     }
                                 });
                             });

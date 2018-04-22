@@ -5,6 +5,7 @@ import os
 import shutil
 import threading
 import Queue
+from selenium import webdriver
 from flask import render_template, request, jsonify
 from . import main
 from .. import spiders
@@ -54,3 +55,41 @@ def del_tmp():
             shutil.rmtree(now_dir)
             os.mkdir(now_dir)
         return jsonify({'is_del':True}) 
+
+
+@main.route('/current_bet_url/', methods=['POST'])
+def current_bet_url():
+    if request.method == 'POST':
+        
+        ranks1 = str(request.form['ranks1'].encode('utf-8'))
+        url1 = str(request.form['url1'].encode('utf-8'))
+        ranks2 = str(request.form['ranks2'].encode('utf-8'))
+        url2 = str(request.form['url2'].encode('utf-8'))
+        sports = str(request.form['sports']).encode('utf-8')
+        url1_mid_name = url1.split('.')[1]
+        url2_mid_name = url2.split('.')[1]
+        bet365_cookie1 = ""
+        bet365_cookie2 = ""
+        if url1_mid_name == "marathonbet":
+            current_bet_url1 = spiders.open_marathon.get_current_url(url1, ranks1)
+        elif url1_mid_name == 'bet365':
+            url_cookie = spiders.open_bet365.get_bet365_url(sports, ranks1)
+            current_bet_url1 = url_cookie['urls']
+            bet365_cookie1 = url_cookie['cookie']
+            print(current_bet_url1)
+            print("1打开bet365页面")
+        else:
+            current_bet_url1 = ''
+
+        if url2_mid_name == "marathonbet":
+            current_bet_url2 = spiders.open_marathon.get_current_url(url2, ranks2)
+        elif url2_mid_name == 'bet365':
+            url_cookie = spiders.open_bet365.get_bet365_url(sports, ranks2)
+            current_bet_url2 = url_cookie['urls']
+            bet365_cookie2 = url_cookie['cookie']
+            print(current_bet_url1)
+            print("2打开bet365页面")
+        else:
+            current_bet_url2 = ''
+        
+        return jsonify({'url1': current_bet_url1, 'url2': current_bet_url2, 'cookies1':bet365_cookie1, 'cookies2':bet365_cookie2})

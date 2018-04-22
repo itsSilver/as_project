@@ -44,7 +44,7 @@ def get_betburger_web_content(url):
             'notification_popup': 'false',
             'show_event_arbs': 'true',
             'grouped': 'true',
-            'per_page': '10',
+            'per_page': '50',
             'sort_by': 'percent',
             'event_id': '',
             '''
